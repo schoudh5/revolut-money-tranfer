@@ -1,6 +1,5 @@
 package revolut.money.transfer.service;
 
-import org.springframework.transaction.annotation.Transactional;
 import revolut.money.transfer.Transfer;
 import revolut.money.transfer.TransferStatus;
 
