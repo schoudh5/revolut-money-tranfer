@@ -30,13 +30,14 @@ public class MoneyTransferService {
         loadDummyData();
     }
 
-    @Transactional
     public TransferStatus transfer(Transfer transfer){
         Account sourceAccount = membershipService.getUserAccount(transfer.getSource());
         Account destinationAccount = membershipService.getUserAccount(transfer.getDestination());
-        if(sourceAccount.getAvailableMoney() >=transfer.getAmount()){
-            sourceAccount.withdraw(transfer.getAmount());
-            destinationAccount.deposit(transfer.getAmount());
+        synchronized (this) {
+            if(sourceAccount.getAvailableMoney() >=transfer.getAmount()){
+                sourceAccount.withdraw(transfer.getAmount());
+                destinationAccount.deposit(transfer.getAmount());
+            }
         }
         return TransferStatus.newBuilder()
                 .withSourceUsername(transfer.getSource().getUsername())

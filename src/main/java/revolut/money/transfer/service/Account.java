@@ -1,16 +1,14 @@
 package revolut.money.transfer.service;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import javax.annotation.concurrent.ThreadSafe;
 
+@ThreadSafe
 public class Account {
     private final String accountId;
     private double availableMoney;
-    private Lock lock;
     public Account(String accountId, double availableMoney) {
         this.accountId = accountId;
         this.availableMoney = availableMoney;
-        lock = new ReentrantLock();
     }
 
     public String getAccountId() {
@@ -18,39 +16,23 @@ public class Account {
     }
 
     public double getAvailableMoney() {
-        try{
-            lock.lock();
-            return availableMoney;
-        } finally {
-            lock.unlock();
-        }
-
+        return availableMoney;
     }
 
     public double deposit(double amount){
         double tempBalance = 0.0;
-        try{
-            lock.lock();
-            tempBalance = availableMoney;
-            tempBalance+=amount;
-            availableMoney=tempBalance;
-            return tempBalance;
-        } finally {
-            lock.unlock();
-        }
+        tempBalance = availableMoney;
+        tempBalance+=amount;
+        availableMoney=tempBalance;
+        return tempBalance;
     }
 
     public double withdraw(double amount){
         double tempBalance = 0.0;
-        try{
-            lock.lock();
-            tempBalance = availableMoney;
-            tempBalance-=amount;
-            availableMoney=tempBalance;
-            return tempBalance;
-        } finally {
-            lock.unlock();
-        }
+        tempBalance = availableMoney;
+        tempBalance-=amount;
+        availableMoney=tempBalance;
+        return tempBalance;
     }
 
     @Override
